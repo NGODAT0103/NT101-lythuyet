@@ -4,9 +4,10 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
@@ -94,15 +95,29 @@ public class CustomRsa {
         writer.write(exportPrivateKey());
         writer.close();
     }
+
+    public void loadFromFile() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        JFileChooser jFileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(null,"pem");
+        jFileChooser.setFileFilter(filter);
+        jFileChooser.setCurrentDirectory(new File(System.getProperty("user.dir").concat("/rsakey/")));
+        jFileChooser.showOpenDialog(new JFrame().getParent());
+        FileInputStream reader = new FileInputStream(jFileChooser.getSelectedFile());
+        String data = new String(reader.readAllBytes(), StandardCharsets.UTF_8);
+        reader.close();
+        if (data.contains(beginCertPem)){
+            importPublicKey(data);
+        }
+        else if(data.contains(beginPrivatePem)){
+            importPrivateKey(data);
+        }
+    }
+
     public String exportPrivateKey(){
         return beginPrivatePem +
                 Base64.getEncoder().encodeToString(privateKey.getEncoded()) +
                 endPrivatePem;
     }
-
-
-
-
 
 
 }
