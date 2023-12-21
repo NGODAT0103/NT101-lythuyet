@@ -1,20 +1,20 @@
-package frontend;
+package frontend.form;
 
 import backend.CustomRsa;
+import backend.GlobalVar;
+import frontend.other.MouseTripClick;
+import frontend.button.SaveButton;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 public class KeyInfo extends JFrame  {
-    static Font NORMALFONT;
-    static Font KETFONT;
+   public static Font NORMALFONT;
+    public static Font KETFONT;
 
     JLabel publickeyLabel,privatekeyLabel;
     JTextArea publickeyJTxtArea,privatekeyJTxtArea;
-    JButton saveJbutton;
     static {
         NORMALFONT = new Font("Times New Roman",Font.BOLD,22);
         KETFONT =new Font("Times New Roman",Font.PLAIN,18);
@@ -22,7 +22,7 @@ public class KeyInfo extends JFrame  {
 
 
 
-    KeyInfo() throws NoSuchAlgorithmException {
+    public KeyInfo(MainUI mainUI) throws NoSuchAlgorithmException {
         this.setLayout(null);
         this.setSize(720,560);
         this.setTitle("Your RSA key");
@@ -67,40 +67,19 @@ public class KeyInfo extends JFrame  {
 
 
         CustomRsa rsa = new CustomRsa(true);
-        saveJbutton = new JButton();
-        saveJbutton.setText("Save to ");
-        saveJbutton.setFont(NORMALFONT);
-        saveJbutton.setBounds(250,0,175,50);
-        saveJbutton.setFocusable(false);
-        saveJbutton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                try {
-                    JOptionPane.showMessageDialog(null,"Key stored at: \n".concat(rsa.exportToFile()));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
+
+        GlobalVar.rsa = rsa;
         publickeyJTxtArea.setText(rsa.exportCert());
         privatekeyJTxtArea.setText(rsa.exportPrivateKey());
         privatekeyLabel.invalidate();
-
         publickeyJTxtArea.setEditable(false);
         privatekeyJTxtArea.setEditable(false);
-
-
         this.add(publickeyJTxtArea);
         this.add(privatekeyLabel);
         this.add(privatekeyJTxtArea);
         this.add(publickeyLabel);
-        this.add(saveJbutton);
+        this.add(new SaveButton(rsa));
         this.setVisible(true);
-
-
-
-
-
     }
 
 }

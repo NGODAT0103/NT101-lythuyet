@@ -1,39 +1,28 @@
-package frontend;
+package frontend.button;
 
-import javax.swing.*;
-import java.awt.*;
+import frontend.form.KeyInfo;
+import frontend.form.MainUI;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.security.NoSuchAlgorithmException;
 
-public class GenrateJbutton extends JButton implements ActionListener {
-    static Font normalFont;
-    static Font keyFont;
+public class GenerateButton extends BaseButton implements ActionListener {
     KeyInfo keyInfo = null;
+    MainUI mainUI ;
 
-    static {
-        normalFont = new Font("Times New Roman",Font.BOLD,20);
-        keyFont =new Font("Times New Roman",Font.PLAIN,10);
-    }
-
-    GenrateJbutton(){
+    public GenerateButton(MainUI currentUI){
         this.setBounds(0,75,150,50);
         this.setText("Generate key");
-        this.setFocusable(false);
-        this.setHorizontalAlignment(JButton.CENTER);
-        this.setVerticalAlignment(JButton.CENTER);
-        this.setFont(normalFont);
-        this.setPreferredSize(new Dimension(75,75));
-        this.setVisible(true);
         this.addActionListener(this);
-
+        this.mainUI = currentUI;
     }
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         if (keyInfo==null) {
             try {
-                keyInfo = new KeyInfo();
+                keyInfo = new KeyInfo(mainUI);
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }
@@ -42,7 +31,7 @@ public class GenrateJbutton extends JButton implements ActionListener {
         if (!keyInfo.isShowing()){
             keyInfo.dispose();
             try {
-                keyInfo = new KeyInfo();
+                keyInfo = new KeyInfo(mainUI);
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }

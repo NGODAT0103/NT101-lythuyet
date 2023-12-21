@@ -1,14 +1,17 @@
-package frontend;
+package frontend.form;
+
+import backend.CustomRsa;
+import frontend.button.GenerateButton;
+import frontend.other.EncryptionPanel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class AppUI extends JFrame implements ActionListener {
+public class MainUI extends JFrame implements ActionListener {
     static Font titleFont;
-
-
+    CustomRsa rsa;
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         System.out.println("Got click");
@@ -18,7 +21,12 @@ public class AppUI extends JFrame implements ActionListener {
     }
 
 
-    public AppUI(){
+    public void setRsa(CustomRsa rsa){
+        this.rsa = rsa;
+    }
+
+
+    public MainUI(){
         this.setSize(720,560);
         this.setTitle("RSA tool");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -26,7 +34,6 @@ public class AppUI extends JFrame implements ActionListener {
         ImageIcon imageicon = new ImageIcon("encrypt.png");
         this.setIconImage(imageicon.getImage());
         this.setLayout(null);
-
         JLabel welcomeLabel = new JLabel();
         welcomeLabel.setText("Welcome to RSA project tool");
         welcomeLabel.setFont(titleFont);
@@ -34,12 +41,14 @@ public class AppUI extends JFrame implements ActionListener {
         welcomeLabel.setVerticalAlignment(JLabel.CENTER);
         welcomeLabel.setBounds(0,0,720,50);
         welcomeLabel.setOpaque(true);
-
         this.add(welcomeLabel);
-        this.add(new GenrateJbutton());
-
+        this.add(new GenerateButton(this));
+        this.add(new EncryptionPanel());
         this.setVisible(true);
-
     }
+
+
+
+
 
 }

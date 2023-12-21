@@ -1,19 +1,15 @@
-package frontend;
-
+package frontend.other;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 public class MouseTripClick  extends MouseAdapter {
-
     JTextArea jTextArea;
-    MouseTripClick(JTextArea jTextArea){
+    public MouseTripClick(JTextArea jTextArea){
         this.jTextArea = jTextArea;
 
     }
     @Override
     public void mouseClicked(MouseEvent e) {
-        System.out.println(e.getClickCount());
         if (e.getClickCount()==3)
         {
             jTextArea.requestFocus();

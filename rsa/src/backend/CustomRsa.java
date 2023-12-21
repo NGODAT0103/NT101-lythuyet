@@ -6,11 +6,9 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
-import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -93,7 +91,6 @@ public class CustomRsa {
         fileChooser.setAcceptAllFileFilterUsed(false);
 
         fileChooser.showSaveDialog(null);
-
 
 
 
