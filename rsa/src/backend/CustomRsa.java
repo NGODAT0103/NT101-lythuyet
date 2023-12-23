@@ -23,6 +23,7 @@ public class CustomRsa {
     static String endCertPem;
     static String beginPrivatePem;
     static String endPrivatePem;
+    public boolean hasPublicKey,hasPrivateKey;
     KeyPair keyPair;
     static {
         beginCertPem = "-----BEGIN CERTIFICATE-----\n";
@@ -32,13 +33,17 @@ public class CustomRsa {
     }
     public CustomRsa(boolean generateKey) throws NoSuchAlgorithmException {
         this.keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        JOptionPane.showInputDialog("Input your key size: ");
         this.keyPair = this.keyPairGenerator.generateKeyPair();
         this.publickey = this.keyPair.getPublic();
         this.privateKey = this.keyPair.getPrivate();
+        hasPublicKey = true;
+        hasPrivateKey = true;
     }
 
     public CustomRsa(){
-
+        hasPrivateKey = false;
+        hasPublicKey = false;
     }
 
 
@@ -48,6 +53,7 @@ public class CustomRsa {
         X509EncodedKeySpec spec = new X509EncodedKeySpec(publickeyByte);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         this.publickey =  keyFactory.generatePublic(spec);
+        hasPublicKey = true;
     }
 
     public void importPrivateKey(String privatekey) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -56,6 +62,7 @@ public class CustomRsa {
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(privatekeyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         this.privateKey =  keyFactory.generatePrivate(spec);
+        hasPrivateKey = true;
     }
 
     public PublicKey getPublicKey(){
@@ -67,12 +74,24 @@ public class CustomRsa {
     public byte[] encryptBytes(byte[] plaintextBytes) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         Cipher encryptCipher = Cipher.getInstance("RSA");
         encryptCipher.init(Cipher.ENCRYPT_MODE,publickey);
-        return encryptCipher.doFinal(plaintextBytes);
+        try {
+
+            return encryptCipher.doFinal(plaintextBytes);
+        }catch (IllegalBlockSizeException e){
+            JOptionPane.showMessageDialog(null,e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
     }
     public byte[] decryptBytes(byte[] cipherBytes) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         Cipher decryptCIpher = Cipher.getInstance("RSA");
         decryptCIpher.init(Cipher.DECRYPT_MODE,privateKey);
-        return decryptCIpher.doFinal(cipherBytes);
+        try {
+            return decryptCIpher.doFinal(cipherBytes);
+        }
+        catch (BadPaddingException e){
+            JOptionPane.showMessageDialog(null,"Data needed for decrypting an invalid or incorrect private key",e.getMessage(),JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
 
     }
 
@@ -87,15 +106,8 @@ public class CustomRsa {
         fileChooser.setCurrentDirectory(new File( System.getProperty("user.dir").concat("/rsakey")));
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fileChooser.setDialogTitle("Select your path to save");
-
         fileChooser.setAcceptAllFileFilterUsed(false);
-
         fileChooser.showSaveDialog(null);
-
-
-
-
-
         File certFile = new File(fileChooser.getSelectedFile().toString().concat("\\cert.pem"));
         File privateFile = new File(fileChooser.getSelectedFile().toString().concat("\\key.pem"));
         certFile.createNewFile();
@@ -117,6 +129,10 @@ public class CustomRsa {
         jFileChooser.setFileFilter(filter);
         jFileChooser.setCurrentDirectory(new File(System.getProperty("user.dir").concat("/rsakey/")));
         jFileChooser.showOpenDialog(new JFrame().getParent());
+
+        if (jFileChooser.getSelectedFile() == null)
+            return;
+
         FileInputStream reader = new FileInputStream(jFileChooser.getSelectedFile());
         String data = new String(reader.readAllBytes(), StandardCharsets.UTF_8);
         reader.close();

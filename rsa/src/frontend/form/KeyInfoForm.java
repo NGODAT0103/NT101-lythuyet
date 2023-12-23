@@ -2,6 +2,9 @@ package frontend.form;
 
 import backend.CustomRsa;
 import backend.GlobalVar;
+import frontend.button.GenerateKey;
+import frontend.button.ImportKey;
+import frontend.button.KeyInfoButton;
 import frontend.other.MouseTripClick;
 import frontend.button.SaveButton;
 
@@ -9,7 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.security.NoSuchAlgorithmException;
 
-public class KeyInfo extends JFrame  {
+public class KeyInfoForm extends JFrame  {
    public static Font NORMALFONT;
     public static Font KETFONT;
 
@@ -22,7 +25,7 @@ public class KeyInfo extends JFrame  {
 
 
 
-    public KeyInfo(MainUI mainUI) throws NoSuchAlgorithmException {
+    public KeyInfoForm() throws NoSuchAlgorithmException {
         this.setLayout(null);
         this.setSize(720,560);
         this.setTitle("Your RSA key");
@@ -45,13 +48,7 @@ public class KeyInfo extends JFrame  {
         publickeyJTxtArea.setText("This is your public key");
         publickeyJTxtArea.setLineWrap(true);
         publickeyJTxtArea.setBounds(0,100,340,400);
-
         publickeyJTxtArea.addMouseListener(new MouseTripClick(publickeyJTxtArea));
-
-
-
-
-
 
 
       //  publickeyJTxtArea.setBackground(Color.red);
@@ -65,20 +62,31 @@ public class KeyInfo extends JFrame  {
         privatekeyJTxtArea.addMouseListener(new MouseTripClick(privatekeyJTxtArea));
        // privatekeyJTxtArea.setBackground(Color.blue);
 
-
-        CustomRsa rsa = new CustomRsa(true);
-
-        GlobalVar.rsa = rsa;
-        publickeyJTxtArea.setText(rsa.exportCert());
-        privatekeyJTxtArea.setText(rsa.exportPrivateKey());
-        privatekeyLabel.invalidate();
         publickeyJTxtArea.setEditable(false);
         privatekeyJTxtArea.setEditable(false);
+
+
+        if(GlobalVar.rsa.getPublicKey() !=null && GlobalVar.rsa.getPrivateKey() !=null)
+        {
+            publickeyJTxtArea.setText(GlobalVar.rsa.exportCert());
+            privatekeyJTxtArea.setText(GlobalVar.rsa.exportPrivateKey());
+        }
+        else if(GlobalVar.rsa.getPrivateKey()!=null) {
+            privatekeyJTxtArea.setText(GlobalVar.rsa.exportPrivateKey());
+            JOptionPane.showMessageDialog(null,"Missing your public key","Warning",JOptionPane.WARNING_MESSAGE);
+        }
+        else if(GlobalVar.rsa.getPublicKey()!=null){
+            publickeyJTxtArea.setText(GlobalVar.rsa.exportCert());
+            JOptionPane.showMessageDialog(null,"Missing your private key","Warning",JOptionPane.WARNING_MESSAGE);
+        }
         this.add(publickeyJTxtArea);
         this.add(privatekeyLabel);
         this.add(privatekeyJTxtArea);
         this.add(publickeyLabel);
-        this.add(new SaveButton(rsa));
+        this.add(new SaveButton());
+        this.add(new GenerateKey(publickeyJTxtArea,privatekeyJTxtArea));
+        this.add(new ImportKey(publickeyJTxtArea,privatekeyJTxtArea));
+
         this.setVisible(true);
     }
 

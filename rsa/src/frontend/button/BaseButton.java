@@ -6,9 +6,12 @@ import java.awt.*;
 public class BaseButton extends JButton {
     static Font normalFont;
     static Font keyFont;
+    static Font featureFont;
     static {
         normalFont = new Font("Times New Roman",Font.BOLD,20);
         keyFont =new Font("Times New Roman",Font.PLAIN,10);
+        featureFont = new Font("Times New Roman",Font.BOLD,15);
+
     }
     protected BaseButton(){
         this.setFocusable(false);

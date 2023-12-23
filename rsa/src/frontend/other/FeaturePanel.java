@@ -1,13 +1,16 @@
 package frontend.other;
-import frontend.button.DecryptButton;
-import frontend.button.EncryptButton;
+import frontend.button.Decrypt;
+import frontend.button.Encrypt;
+import frontend.button.SignData;
+import frontend.button.VerifyData;
+
 import javax.swing.*;
 import java.awt.*;
-public class EncryptionPanel extends JPanel {
+public class FeaturePanel extends JPanel {
 
     JTextArea input;
     JTextArea output;
-    public EncryptionPanel(){
+    public FeaturePanel(){
         this.setBounds(180,160,450,350);
         this.setBackground(Color.DARK_GRAY);
         this.setLayout(null);
@@ -20,6 +23,7 @@ public class EncryptionPanel extends JPanel {
         input.setBounds(0,0,450,100);
         input.setBackground(Color.CYAN);
         input.setLineWrap(true);
+        input.setWrapStyleWord(true);
         input.setVisible(true);
 
         output = new JTextArea();
@@ -29,13 +33,16 @@ public class EncryptionPanel extends JPanel {
         output.setBounds(0,100,450,100);
         output.setBackground(Color.YELLOW);
         output.setLineWrap(true);
+        output.setWrapStyleWord(true);
         output.setVisible(true);
 
 
         this.add(input);
         this.add(output);
-        this.add(new EncryptButton(input,output));
-        this.add(new DecryptButton(input,output));
+        this.add(new Encrypt(input,output));
+        this.add(new Decrypt(input,output));
+        this.add(new SignData(input));
+        this.add(new VerifyData(input));
         this.setVisible(true);
 
     }

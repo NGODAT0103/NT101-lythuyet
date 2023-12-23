@@ -12,11 +12,11 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
-public class EncryptButton extends BaseButton {
+public class Encrypt extends BaseButton {
 
-    public EncryptButton(JTextArea input,JTextArea output){
+    public Encrypt(JTextArea input, JTextArea output){
         this.setText("Encrypt");
-        this.setFont(new Font("Times New Roman",Font.BOLD,15));
+        this.setFont(featureFont);
         this.setBounds(240,200,100,40);
 
         this.addActionListener(new ActionListener() {
@@ -32,6 +32,17 @@ public class EncryptButton extends BaseButton {
                     return;
                 }
 
+                if (!GlobalVar.rsa.hasPublicKey)
+                {
+                    JOptionPane.showMessageDialog(null,"Missing your public key","Warning",JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                else if(!GlobalVar.rsa.hasPrivateKey){
+                    JOptionPane.showMessageDialog(null,"Missing your private key","Warning",JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+
                 if (input.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter data", "Field empty", JOptionPane.WARNING_MESSAGE);
                     return;
@@ -39,6 +50,8 @@ public class EncryptButton extends BaseButton {
 
                 try {
                     byte[] encryptData = GlobalVar.rsa.encryptBytes(input.getText().getBytes(StandardCharsets.UTF_8));
+                    if (encryptData == null)
+                        return;
                     output.setText(Base64.getEncoder().encodeToString(encryptData));
 
 

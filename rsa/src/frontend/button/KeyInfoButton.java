@@ -1,28 +1,25 @@
 package frontend.button;
 
-import frontend.form.KeyInfo;
-import frontend.form.MainUI;
+import frontend.form.KeyInfoForm;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.security.NoSuchAlgorithmException;
 
-public class GenerateButton extends BaseButton implements ActionListener {
-    KeyInfo keyInfo = null;
-    MainUI mainUI ;
+public class KeyInfoButton extends BaseButton implements ActionListener {
+    KeyInfoForm keyInfo = null;
 
-    public GenerateButton(MainUI currentUI){
-        this.setBounds(0,75,150,50);
-        this.setText("Generate key");
+    public KeyInfoButton(){
+        this.setBounds(0,75,180,50);
+        this.setText("Your RSA key");
         this.addActionListener(this);
-        this.mainUI = currentUI;
     }
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         if (keyInfo==null) {
             try {
-                keyInfo = new KeyInfo(mainUI);
+                keyInfo = new KeyInfoForm();
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }
@@ -31,7 +28,7 @@ public class GenerateButton extends BaseButton implements ActionListener {
         if (!keyInfo.isShowing()){
             keyInfo.dispose();
             try {
-                keyInfo = new KeyInfo(mainUI);
+                keyInfo = new KeyInfoForm();
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }

@@ -12,10 +12,10 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
-public class DecryptButton extends BaseButton{
-    public DecryptButton(JTextArea input,JTextArea output){
+public class Decrypt extends BaseButton{
+    public Decrypt(JTextArea input, JTextArea output){
         this.setText("Decrypt");
-        this.setFont(new Font("Times New Roman",Font.BOLD,15));
+        this.setFont(featureFont);
         this.setBounds(340,200,100,40);
 
         this.addActionListener(new ActionListener() {
@@ -28,6 +28,8 @@ public class DecryptButton extends BaseButton{
 
                 try {
                     byte[] decryptData = GlobalVar.rsa.decryptBytes(Base64.getDecoder().decode(input.getText()));
+                    if(decryptData == null)
+                        return;
                     output.setText(new String(decryptData,StandardCharsets.UTF_8));
                 } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException |
                          IllegalBlockSizeException | BadPaddingException e) {
