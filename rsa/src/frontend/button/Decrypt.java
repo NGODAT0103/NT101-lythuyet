@@ -26,15 +26,7 @@ public class Decrypt extends BaseButton{
                     return;
                 }
 
-                try {
-                    byte[] decryptData = GlobalVar.rsa.decryptBytes(Base64.getDecoder().decode(input.getText()));
-                    if(decryptData == null)
-                        return;
-                    output.setText(new String(decryptData,StandardCharsets.UTF_8));
-                } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException |
-                         IllegalBlockSizeException | BadPaddingException e) {
-                    throw new RuntimeException(e);
-                }
+                output.setText(GlobalVar.rsa.decrypt(input.getText()));
             }
         });
     }

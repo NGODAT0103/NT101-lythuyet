@@ -4,6 +4,7 @@ import frontend.form.KeyInfoForm;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 public class KeyInfoButton extends BaseButton implements ActionListener {
@@ -20,7 +21,7 @@ public class KeyInfoButton extends BaseButton implements ActionListener {
         if (keyInfo==null) {
             try {
                 keyInfo = new KeyInfoForm();
-            } catch (NoSuchAlgorithmException e) {
+            } catch (NoSuchAlgorithmException | IOException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -29,7 +30,7 @@ public class KeyInfoButton extends BaseButton implements ActionListener {
             keyInfo.dispose();
             try {
                 keyInfo = new KeyInfoForm();
-            } catch (NoSuchAlgorithmException e) {
+            } catch (NoSuchAlgorithmException | IOException e) {
                 throw new RuntimeException(e);
             }
         }

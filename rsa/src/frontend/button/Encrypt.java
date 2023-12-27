@@ -48,17 +48,8 @@ public class Encrypt extends BaseButton {
                     return;
                 }
 
-                try {
-                    byte[] encryptData = GlobalVar.rsa.encryptBytes(input.getText().getBytes(StandardCharsets.UTF_8));
-                    if (encryptData == null)
-                        return;
-                    output.setText(Base64.getEncoder().encodeToString(encryptData));
+                    output.setText(GlobalVar.rsa.encrypt(input.getText()));
 
-
-                } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException |
-                         IllegalBlockSizeException | BadPaddingException e) {
-                    throw new RuntimeException(e);
-                }
 
             }
         });

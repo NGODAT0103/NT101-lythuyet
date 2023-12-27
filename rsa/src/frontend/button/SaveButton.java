@@ -1,6 +1,5 @@
 package frontend.button;
 
-import backend.CustomRsa;
 import backend.GlobalVar;
 
 import javax.swing.*;

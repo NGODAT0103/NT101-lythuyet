@@ -1,6 +1,6 @@
 package frontend.form;
 
-import backend.CustomRsa;
+import backend.CustomRSA;
 import backend.GlobalVar;
 import frontend.button.KeyInfoButton;
 import frontend.other.FeaturePanel;
@@ -15,7 +15,7 @@ import java.security.spec.InvalidKeySpecException;
 
 public class MainUI extends JFrame implements ActionListener {
     static Font titleFont;
-    CustomRsa rsa;
+    CustomRSA rsa;
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         System.out.println("Got click");
@@ -44,7 +44,7 @@ public class MainUI extends JFrame implements ActionListener {
         this.add(new KeyInfoButton());
         this.add(new FeaturePanel());
         this.setVisible(true);
-        GlobalVar.rsa = new CustomRsa();
+        GlobalVar.rsa = new CustomRSA();
     }
 
 }

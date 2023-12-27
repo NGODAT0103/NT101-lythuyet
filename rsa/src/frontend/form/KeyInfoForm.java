@@ -1,6 +1,5 @@
 package frontend.form;
 
-import backend.CustomRsa;
 import backend.GlobalVar;
 import frontend.button.GenerateKey;
 import frontend.button.ImportKey;
@@ -10,6 +9,7 @@ import frontend.button.SaveButton;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 public class KeyInfoForm extends JFrame  {
@@ -25,7 +25,7 @@ public class KeyInfoForm extends JFrame  {
 
 
 
-    public KeyInfoForm() throws NoSuchAlgorithmException {
+    public KeyInfoForm() throws NoSuchAlgorithmException, IOException {
         this.setLayout(null);
         this.setSize(720,560);
         this.setTitle("Your RSA key");
@@ -66,16 +66,16 @@ public class KeyInfoForm extends JFrame  {
         privatekeyJTxtArea.setEditable(false);
 
 
-        if(GlobalVar.rsa.getPublicKey() !=null && GlobalVar.rsa.getPrivateKey() !=null)
+        if(GlobalVar.rsa.hasPublicKey&& GlobalVar.rsa.hasPrivateKey)
         {
             publickeyJTxtArea.setText(GlobalVar.rsa.exportCert());
             privatekeyJTxtArea.setText(GlobalVar.rsa.exportPrivateKey());
         }
-        else if(GlobalVar.rsa.getPrivateKey()!=null) {
+        else if(GlobalVar.rsa.hasPrivateKey) {
             privatekeyJTxtArea.setText(GlobalVar.rsa.exportPrivateKey());
             JOptionPane.showMessageDialog(null,"Missing your public key","Warning",JOptionPane.WARNING_MESSAGE);
         }
-        else if(GlobalVar.rsa.getPublicKey()!=null){
+        else if(GlobalVar.rsa.hasPublicKey){
             publickeyJTxtArea.setText(GlobalVar.rsa.exportCert());
             JOptionPane.showMessageDialog(null,"Missing your private key","Warning",JOptionPane.WARNING_MESSAGE);
         }

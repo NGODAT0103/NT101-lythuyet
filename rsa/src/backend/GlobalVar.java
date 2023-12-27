@@ -1,6 +1,5 @@
 package backend;
 
 public class GlobalVar {
-    public static CustomRsa rsa;
-
+    public static CustomRSA rsa;
 }

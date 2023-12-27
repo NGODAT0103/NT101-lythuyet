@@ -1,11 +1,12 @@
 package frontend.button;
 
-import backend.CustomRsa;
+import backend.CustomRSA;
 import backend.GlobalVar;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 public class GenerateKey extends BaseButton{
@@ -16,11 +17,11 @@ public class GenerateKey extends BaseButton{
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    GlobalVar.rsa = new CustomRsa(true);
+                    GlobalVar.rsa = new CustomRSA(2048);
                     publicKey.setText(GlobalVar.rsa.exportCert());
                     privateKey.setText(GlobalVar.rsa.exportPrivateKey());
 
-                } catch (NoSuchAlgorithmException e) {
+                } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
 
