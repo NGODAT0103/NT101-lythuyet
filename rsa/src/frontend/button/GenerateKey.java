@@ -17,7 +17,14 @@ public class GenerateKey extends BaseButton{
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    int keySize = Integer.parseInt(JOptionPane.showInputDialog("Input your key size: "));
+                    int keySize;
+                    try {
+                        keySize = Integer.parseInt(JOptionPane.showInputDialog("Input your key size: "));
+                    } catch (NumberFormatException e){
+                        return;
+                    }
+
+
                     if(keySize<512){
                         JOptionPane.showMessageDialog(null,"The key size must be large (512 bytes).","Key size is invalid.",JOptionPane.ERROR_MESSAGE);
                         return;
