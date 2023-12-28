@@ -1,10 +1,8 @@
 package backend;
-
-import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-
 public class OAEP {
     public static final SecureRandom random = new SecureRandom();
 
@@ -26,7 +24,7 @@ public class OAEP {
             temp[2] = (byte) (i >>> 8);
             temp[3] = (byte) i;
             int remaining = desiredLength - offset;
-            System.arraycopy(SHA256(temp), 0, mask, offset, remaining < hLen ? remaining : hLen);
+            System.arraycopy(SHA256(temp), 0, mask, offset, Math.min(remaining, hLen));
             offset = offset + hLen;
             i = i + 1;
         }
@@ -46,7 +44,7 @@ public class OAEP {
         for (int i = 0; i < hLen; i++) {
             copy[i] ^= seedMask[i];
         }
-        byte[] paramsHash = SHA256(params.getBytes("UTF-8"));
+        byte[] paramsHash = SHA256(params.getBytes(StandardCharsets.UTF_8));
         byte[] dataBlockMask = MGF1(copy, 0, hLen, mLen - hLen);
         int index = -1;
         for (int i = hLen; i < mLen; i++) {
@@ -83,7 +81,7 @@ public class OAEP {
         int zeroPad = length - mLen - (hLen << 1) - 1;
         byte[] dataBlock = new byte[length - hLen];
 
-        System.arraycopy(SHA256(params.getBytes("UTF-8")), 0, dataBlock, 0, hLen);
+        System.arraycopy(SHA256(params.getBytes(StandardCharsets.UTF_8)), 0, dataBlock, 0, hLen);
         System.arraycopy(message, 0, dataBlock, hLen + zeroPad + 1, mLen);
         dataBlock[hLen + zeroPad] = 1;
         byte[] seed = new byte[hLen];

@@ -1,12 +1,9 @@
 package frontend.form;
-
 import backend.GlobalVar;
 import frontend.button.GenerateKey;
 import frontend.button.ImportKey;
-import frontend.button.KeyInfoButton;
 import frontend.other.MouseTripClick;
 import frontend.button.SaveButton;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;

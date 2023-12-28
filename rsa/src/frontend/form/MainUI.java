@@ -1,21 +1,15 @@
 package frontend.form;
-
 import backend.CustomRSA;
 import backend.GlobalVar;
 import frontend.button.KeyInfoButton;
 import frontend.other.FeaturePanel;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 
 public class MainUI extends JFrame implements ActionListener {
     static Font titleFont;
-    CustomRSA rsa;
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         System.out.println("Got click");
@@ -25,7 +19,7 @@ public class MainUI extends JFrame implements ActionListener {
     }
 
 
-    public MainUI() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    public MainUI()  {
         this.setSize(720,560);
         this.setTitle("RSA tool");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

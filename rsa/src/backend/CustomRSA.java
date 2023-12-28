@@ -10,10 +10,8 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.Objects;
 import java.util.Random;
 
 public class CustomRSA {
@@ -23,7 +21,6 @@ public class CustomRSA {
 	static String endPrivatePem;
 	public boolean hasPublicKey,hasPrivateKey;
 	
-	private final static SecureRandom random = new SecureRandom();
 	private final static BigInteger one = new BigInteger("1");
 	static {
 		beginCertPem = "-----BEGIN CERTIFICATE-----\n";
@@ -39,17 +36,15 @@ public class CustomRSA {
 	private BigInteger privateKeyBig;
 	
 	public CustomRSA(int bitLength) throws Exception {
-		while (true) {
-			BigInteger p = BigInteger.probablePrime(bitLength / 2, new Random());
-			BigInteger q = BigInteger.probablePrime(bitLength / 2, new Random());
-			BigInteger phi = (p.subtract(one)).multiply(q.subtract(one));
-			this.modulusBig = p.multiply(q);
-			this.publicKeyBig = new BigInteger("65537");
-			this.privateKeyBig = publicKeyBig.modInverse(phi);
-			if((modulusBig.bitLength()/8)%2 ==0)
-				break;
+        do {
+            BigInteger p = BigInteger.probablePrime(bitLength / 2, new Random());
+            BigInteger q = BigInteger.probablePrime(bitLength / 2, new Random());
+            BigInteger phi = (p.subtract(one)).multiply(q.subtract(one));
+            this.modulusBig = p.multiply(q);
+            this.publicKeyBig = new BigInteger("65537");
+            this.privateKeyBig = publicKeyBig.modInverse(phi);
 
-		}
+        } while ((modulusBig.bitLength() / 8) % 2 != 0);
 
 
 		hasPublicKey = true;
@@ -72,16 +67,26 @@ public class CustomRSA {
 	}
 	
 	public String encrypt(String plainText) throws Exception {
+		while (true){
+			byte[] paddedPlainTextBytes = OAEP.pad(plainText.getBytes(StandardCharsets.UTF_8), keySize());
+			assert paddedPlainTextBytes != null;
+			BigInteger paddedCipherTextBig = new BigInteger(paddedPlainTextBytes);
+			byte[] encrypted = encrypt(paddedCipherTextBig).toByteArray();
+			if (Arrays.equals(paddedPlainTextBytes, decrypt(new BigInteger(encrypted)).toByteArray()))
+				return Base64.getEncoder().encodeToString(encrypted);
+		}
 
-        BigInteger cipherText = encrypt(new BigInteger(plainText.getBytes(StandardCharsets.UTF_8)));
-		byte[] cipherTextBytes = cipherText.toByteArray();
-		return Base64.getEncoder().encodeToString(cipherTextBytes);
+	}
+	public int getLimitBody(){
+		return keySize()-32*2-1;
 	}
 
 	public String decrypt(String cipherTextEncodedB64) throws Exception {
 		byte[] cipherTextBytes = Base64.getDecoder().decode(cipherTextEncodedB64);
 		BigInteger plainTextBig = decrypt(new BigInteger(cipherTextBytes));
-        return new String(plainTextBig.toByteArray(), StandardCharsets.UTF_8);
+		byte[] unpadPlainText = OAEP.unpad(plainTextBig.toByteArray());
+        assert unpadPlainText != null;
+        return new String(unpadPlainText, StandardCharsets.UTF_8);
 	}
 	
 	public BigInteger getModulusBig(){
@@ -90,8 +95,6 @@ public class CustomRSA {
 	
 
 	public String exportCert() throws IOException {
-
-
 		return beginCertPem +
 				Base64.getEncoder().encodeToString(modulusBig.toByteArray())+
 				endCertPem;
@@ -102,7 +105,6 @@ public class CustomRSA {
 				endPrivatePem;
 	}
 	public String exportToFile() throws IOException {
-
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setCurrentDirectory(new File( System.getProperty("user.dir").concat("/rsakey")));
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -119,17 +121,16 @@ public class CustomRSA {
 		writer = new FileWriter(privateFile);
 		writer.write(exportPrivateKey());
 		writer.close();
-
 		return fileChooser.getSelectedFile().toString();
 
 	}
-	public void importPublicKey(String publickey) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public void importPublicKey(String publickey)  {
 		String[] elements = publickey.split("\n");
 		 byte[] publicKeyBytes = Base64.getDecoder().decode(elements[1]);
 		 modulusBig = new BigInteger(publicKeyBytes);
 		 hasPublicKey = true;
 	}
-	public void importPrivateKey(String privatekey) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public void importPrivateKey(String privatekey){
 		String[] elements = privatekey.split("\n");
 		byte[] privateKeyBytes = Base64.getDecoder().decode(elements[1]);
 		privateKeyBig = new BigInteger(privateKeyBytes);
@@ -165,10 +166,8 @@ public class CustomRSA {
 		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 		byte[] hashValue = messageDigest.digest(plainText.getBytes(StandardCharsets.UTF_8));
 		System.out.println(Arrays.toString(hashValue));
-
-
 		while (true){
-			byte[] paddedHashValue = OAEP.pad(hashValue, getModulusBig().bitLength()/8);
+			byte[] paddedHashValue = OAEP.pad(hashValue, keySize());
 			assert paddedHashValue != null;
 			BigInteger paddedHashValueBig = new BigInteger(paddedHashValue);
 			byte[] signature = decrypt(paddedHashValueBig).toByteArray();
@@ -178,14 +177,11 @@ public class CustomRSA {
 	}
 
 	public boolean verifyData(byte[] signature,String originalText) throws Exception {
-		byte[] paddedHashValueFromSignature = encrypt(new BigInteger(signature)).toByteArray(); //modpow(publickey,module)
+		byte[] paddedHashValueFromSignature = encrypt(new BigInteger(signature)).toByteArray();
 		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 		byte[] unpadHashValueFromSignature = OAEP.unpad(paddedHashValueFromSignature);
 		System.out.println(Arrays.toString(unpadHashValueFromSignature));
 		byte[] hashValueFromOriginal = messageDigest.digest(originalText.getBytes(StandardCharsets.UTF_8));
-		System.out.println(modulusBig.bitLength()/8);
-		System.out.println(modulusBig.bitLength());
-
 		return Arrays.equals(hashValueFromOriginal, unpadHashValueFromSignature);
 	}
 

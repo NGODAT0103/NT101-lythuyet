@@ -1,17 +1,8 @@
 package frontend.button;
 import backend.GlobalVar;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-
 public class Decrypt extends BaseButton{
     public Decrypt(JTextArea input, JTextArea output){
         this.setText("Decrypt");
@@ -29,7 +20,8 @@ public class Decrypt extends BaseButton{
                 try {
                     output.setText(GlobalVar.rsa.decrypt(input.getText()));
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    System.out.println(e.getMessage());
+                    JOptionPane.showMessageDialog(null,"Data is not correct format","Data invalid",JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
