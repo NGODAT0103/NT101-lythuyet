@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.nio.charset.StandardCharsets;
+import java.security.GuardedObject;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -48,7 +49,19 @@ public class Encrypt extends BaseButton {
                     return;
                 }
 
+
+                System.out.println("Length input: "+input.getText().length());
+                if(input.getText().length()>= GlobalVar.rsa.getModulusBig().bitLength()/8)
+                {
+                    JOptionPane.showMessageDialog(null, "Please enter input field value < "+ GlobalVar.rsa.keySize()+" bytes", "Input max size key", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                try {
                     output.setText(GlobalVar.rsa.encrypt(input.getText()));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
 
 
             }

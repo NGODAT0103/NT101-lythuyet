@@ -26,7 +26,11 @@ public class Decrypt extends BaseButton{
                     return;
                 }
 
-                output.setText(GlobalVar.rsa.decrypt(input.getText()));
+                try {
+                    output.setText(GlobalVar.rsa.decrypt(input.getText()));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }

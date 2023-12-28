@@ -43,7 +43,7 @@ public class VerifyData extends BaseButton{
                     else
                         JOptionPane.showMessageDialog(null,"Signature invalid or data has been tampered","Verify failed",JOptionPane.ERROR_MESSAGE);
 
-                } catch (IOException | NoSuchAlgorithmException | SignatureException | InvalidKeyException e) {
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }

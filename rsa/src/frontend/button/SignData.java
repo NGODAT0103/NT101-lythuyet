@@ -38,7 +38,8 @@ public class SignData extends BaseButton{
                  FileOutputStream writer = new FileOutputStream(file);
                  writer.write(signature);
                  writer.close();
-                } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException | IOException e) {
+                 JOptionPane.showMessageDialog(null,"Signature stored at: \n".concat(fileChooser.getSelectedFile().toString()));
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
