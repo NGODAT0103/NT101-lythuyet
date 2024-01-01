@@ -35,8 +35,11 @@ public class MainUI extends JFrame implements ActionListener {
         welcomeLabel.setBounds(0,0,720,50);
         welcomeLabel.setOpaque(true);
         this.add(welcomeLabel);
-        this.add(new KeyInfoButton());
-        this.add(new FeaturePanel());
+
+        FeaturePanel featurePanel = new FeaturePanel();
+        this.add(featurePanel);
+        this.add(new KeyInfoButton(featurePanel));
+
         this.setVisible(true);
         GlobalVar.rsa = new CustomRSA();
     }

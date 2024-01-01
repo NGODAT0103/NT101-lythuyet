@@ -1,5 +1,4 @@
 package backend;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
@@ -32,38 +31,77 @@ public class CustomRSA {
 
 	private BigInteger modulusBig;
 	
-	private BigInteger publicKeyBig;
-	private BigInteger privateKeyBig;
+	private BigInteger eExponent;
+	private BigInteger dExponent;
+	private BigInteger p;
+	private  BigInteger q;
+	public boolean isOk;
+
+
+	public String getP(){
+		return p.toString();
+	}
+	public String getQ(){
+		return q.toString();
+	}
 	
-	public CustomRSA(int bitLength) throws Exception {
+	public CustomRSA(int bitLength)  {
         do {
-            BigInteger p = BigInteger.probablePrime(bitLength / 2, new Random());
-            BigInteger q = BigInteger.probablePrime(bitLength / 2, new Random());
+            p = BigInteger.probablePrime(bitLength / 2, new Random());
+            q = BigInteger.probablePrime(bitLength / 2, new Random());
             BigInteger phi = (p.subtract(one)).multiply(q.subtract(one));
             this.modulusBig = p.multiply(q);
-            this.publicKeyBig = new BigInteger("65537");
-            this.privateKeyBig = publicKeyBig.modInverse(phi);
-
+            this.eExponent = new BigInteger("65537");
+            this.dExponent = eExponent.modInverse(phi);
         } while ((modulusBig.bitLength() / 8) % 2 != 0);
 
 
 		hasPublicKey = true;
 		hasPrivateKey = true;
 		System.out.println(getModulusBig().bitLength()/8);
-		
+		isOk = true;
 	}
 	public CustomRSA(){
 		hasPublicKey = false;
-		this.publicKeyBig = new BigInteger("65537");
+		this.eExponent = new BigInteger("65537");
 		hasPrivateKey  = false;
+	}
+	public CustomRSA(String pString,String qString){
+		p = new BigInteger(pString);
+		q = new BigInteger(qString);
+		if (!q.isProbablePrime(1)){
+			JOptionPane.showMessageDialog(null,"q is not a prime numbers\n","Key invalid",JOptionPane.ERROR_MESSAGE);
+			isOk = false;
+			return;
+		}
+		else if (!p.isProbablePrime(1)){
+			JOptionPane.showMessageDialog(null,"p is not a prime numbers\n","Key invalid",JOptionPane.ERROR_MESSAGE);
+			isOk = false;
+			return;
+		}
+		else if (!(q.isProbablePrime(1) && p.isProbablePrime(1)))
+		{
+			JOptionPane.showMessageDialog(null,"Both p and q are not prime numbers\n","Key invalid",JOptionPane.ERROR_MESSAGE);
+			isOk = false;
+			return;
+		}
+
+		BigInteger phi = q.subtract(one).multiply(p.subtract(one));
+		modulusBig = q.multiply(p);
+		this.eExponent = new BigInteger("65537");
+		this.dExponent = eExponent.modInverse(phi);
+		hasPrivateKey = true;
+		hasPublicKey = true;
+		isOk = true;
+
 	}
 
 	public BigInteger encrypt(BigInteger plainText){
-		return plainText.modPow(publicKeyBig, modulusBig);
+		return plainText.modPow(eExponent, modulusBig);
 	}
 	
 	public BigInteger decrypt(BigInteger cipherText){
-		return cipherText.modPow(privateKeyBig, modulusBig);
+		return cipherText.modPow(dExponent, modulusBig);
 	}
 	
 	public String encrypt(String plainText) throws Exception {
@@ -75,7 +113,6 @@ public class CustomRSA {
 			if (Arrays.equals(paddedPlainTextBytes, decrypt(new BigInteger(encrypted)).toByteArray()))
 				return Base64.getEncoder().encodeToString(encrypted);
 		}
-
 	}
 	public int getLimitBody(){
 		return keySize()-32*2-1;
@@ -101,7 +138,7 @@ public class CustomRSA {
 	}
 	public String exportPrivateKey(){
 		return beginPrivatePem +
-				Base64.getEncoder().encodeToString(privateKeyBig.toByteArray()) +
+				Base64.getEncoder().encodeToString(dExponent.toByteArray()) +
 				endPrivatePem;
 	}
 	public String exportToFile() throws IOException {
@@ -111,6 +148,12 @@ public class CustomRSA {
 		fileChooser.setDialogTitle("Select your path to save");
 		fileChooser.setAcceptAllFileFilterUsed(false);
 		fileChooser.showSaveDialog(null);
+
+
+		if (fileChooser.getSelectedFile()==null)
+			return null;
+
+
 		File certFile = new File(fileChooser.getSelectedFile().toString().concat("\\cert.pem"));
 		File privateFile = new File(fileChooser.getSelectedFile().toString().concat("\\key.pem"));
 		certFile.createNewFile();
@@ -133,7 +176,7 @@ public class CustomRSA {
 	public void importPrivateKey(String privatekey){
 		String[] elements = privatekey.split("\n");
 		byte[] privateKeyBytes = Base64.getDecoder().decode(elements[1]);
-		privateKeyBig = new BigInteger(privateKeyBytes);
+		dExponent = new BigInteger(privateKeyBytes);
 		hasPrivateKey = true;
 	}
 

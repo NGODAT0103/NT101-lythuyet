@@ -11,7 +11,10 @@ public class SaveButton extends BaseButton{
         this.setText("Save to ");
         this.addActionListener(actionEvent -> {
             try {
-                JOptionPane.showMessageDialog(null,"Key stored at: \n".concat(GlobalVar.rsa.exportToFile()));
+                String path = GlobalVar.rsa.exportToFile();
+                if (path==null)
+                    return;
+                JOptionPane.showMessageDialog(null,"Key stored at: \n".concat(path));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
