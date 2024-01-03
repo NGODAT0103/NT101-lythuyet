@@ -5,7 +5,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
 public class VerifyData extends BaseButton{
     public VerifyData(JTextArea original){
-        this.setFont(featureFont);
+        this.setFont(FEATUREFONT);
         this.setText("Verify");
         this.setBounds(40,200,100,40);
 

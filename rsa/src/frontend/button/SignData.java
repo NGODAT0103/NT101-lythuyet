@@ -6,7 +6,7 @@ public class SignData extends BaseButton{
     public SignData(JTextArea input){
         this.setText("Sign data");
         this.setBounds(140,200,100,40);
-        this.setFont(featureFont);
+        this.setFont(FEATUREFONT);
         this.addActionListener(actionEvent -> {
             try {
 

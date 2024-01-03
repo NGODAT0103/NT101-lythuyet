@@ -8,8 +8,8 @@ import java.nio.charset.StandardCharsets;
 
 public class FeaturePanel extends JPanel {
 
-    JTextArea input;
-    JTextArea output;
+  public   JTextArea input;
+  public   JTextArea output;
    public JLabel maxEncryptLabel,currentLengthLabel;
     public FeaturePanel(){
         this.setBounds(180,160,450,350);

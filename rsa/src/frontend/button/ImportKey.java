@@ -13,7 +13,7 @@ public class ImportKey extends BaseButton{
             try {
                 GlobalVar.rsa.loadFromFile();
                 if (GlobalVar.rsa.hasPublicKey)
-                    publickey.setText(GlobalVar.rsa.exportCert());
+                publickey.setText(GlobalVar.rsa.exportCert());
                 if(GlobalVar.rsa.hasPrivateKey)
                     privatekey.setText(GlobalVar.rsa.exportPrivateKey());
             } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {

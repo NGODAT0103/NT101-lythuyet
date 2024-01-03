@@ -1,12 +1,14 @@
 package frontend.form;
 import backend.CustomRSA;
 import backend.GlobalVar;
+import frontend.button.FromFileButton;
 import frontend.button.KeyInfoButton;
 import frontend.other.FeaturePanel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class MainUI extends JFrame implements ActionListener {
     static Font titleFont;
@@ -19,7 +21,7 @@ public class MainUI extends JFrame implements ActionListener {
     }
 
 
-    public MainUI()  {
+    public MainUI() throws IOException {
         this.setSize(720,560);
         this.setTitle("RSA tool");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -40,7 +42,23 @@ public class MainUI extends JFrame implements ActionListener {
         this.add(featurePanel);
         this.add(new KeyInfoButton(featurePanel));
 
+
+        FromFileButton forInput = new FromFileButton(featurePanel,FromFileButton.INPUT);
+
+        forInput.setBounds(50,180,100,50);
+        FromFileButton forOutput = new FromFileButton(featurePanel,FromFileButton.OUTPUT);
+        forOutput.setBounds(50,280,100,50);
+
+
+        this.add(forOutput);
+        this.add(forInput);
         this.setVisible(true);
+
+
+
+
+
+
         GlobalVar.rsa = new CustomRSA();
     }
 

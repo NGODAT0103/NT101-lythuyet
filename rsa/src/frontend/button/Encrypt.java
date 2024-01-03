@@ -6,7 +6,7 @@ public class Encrypt extends BaseButton {
 
     public Encrypt(JTextArea input, JTextArea output){
         this.setText("Encrypt");
-        this.setFont(featureFont);
+        this.setFont(FEATUREFONT);
         this.setBounds(240,200,100,40);
 
         this.addActionListener(actionEvent -> {

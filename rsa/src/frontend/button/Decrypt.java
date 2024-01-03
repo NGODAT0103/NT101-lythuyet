@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 public class Decrypt extends BaseButton{
     public Decrypt(JTextArea input, JTextArea output){
         this.setText("Decrypt");
-        this.setFont(featureFont);
+        this.setFont(FEATUREFONT);
         this.setBounds(340,200,100,40);
 
         this.addActionListener(new ActionListener() {
